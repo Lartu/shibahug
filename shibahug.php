@@ -56,7 +56,7 @@ Use: Returns an array of maps: the array is the number of rows that matched the 
 Parameters:
     - $table: the table used to select values from.
     - $fields: the fields used to select values from.
-    - $conditions: the conditions the values to be brought must complay with.
+    - $conditions: the conditions the values to be brought must comply with.
 Returns: the aforementioned array of maps.
 Example: sqlSelect('user', 'surname', 'name="John"') will return the following array: [[surname: "Smith"]].
 .*/
@@ -79,9 +79,9 @@ function sqlSelect($table, $fields, $conditions){
 sqlUpdate($table, $fields_values, $conditions)
 Use: Used to perform an SQL update on the connected database.
 Parameters:
-    - $table: the table where the values will be inserted.
+    - $table: the table where the values will be updated.
     - $fields_values: the fields and values to be updated.
-    - $conditions: the conditions the values to be updated must complay with.
+    - $conditions: the conditions the values to be updated must comply with.
 Example: sqlUpdate('user', 'surname="White"', 'name="John"')
 Returns: Nothing
 */
@@ -98,7 +98,7 @@ sqlDelete($table, $conditions)
 Use: Deletes all rows from $table that match the conditions in $conditions.
 Parameters:
     - $table: the table from where the values will be deleted.
-    - $conditions: the conditions the values to be deleted must complay with.
+    - $conditions: the conditions the values to be deleted must comply with.
 Example: sqlDelete('user', 'surname="White"')
 Returns: Nothing
 */
@@ -112,7 +112,7 @@ function sqlDelete($table, $conditions){
 
 /*
 sqlCount($table, $conditions)
-Use: Counts all the rows that complay with the passed conditions.
+Use: Counts all the rows that comply with the passed conditions.
 Parameters:
     - $table: the table used to count values from.
     - $conditions: the aforementioned conditions.
