@@ -40,6 +40,8 @@ sqlClose();
 
 **Returns:** Nothing
 
+- - - -
+
 ### sqlClose
 **Function:** `sqlClose()`
 
@@ -48,6 +50,8 @@ sqlClose();
 **Parameters:** None
 
 **Returns:** Nothing
+
+- - - -
 
 ### sqlInsert
 **Function:** `sqlInsert($table, $fields, $values)`
@@ -61,6 +65,8 @@ sqlClose();
 **Returns:** Nothing
 
 **Example:** `sqlInsert('user', 'name, surname', '"John", "Smith"')`
+
+- - - -
 
 ### sqlSelect
 **Function:** `sqlSelect($table, $fields, $conditions)`
@@ -76,6 +82,8 @@ sqlClose();
 
 **Example:** `sqlSelect('user', 'surname', 'name="John"')` will return the following array: `[[surname: "Smith"]]`.
 
+- - - -
+
 ### sqlUpdate
 **Function:** `sqlUpdate($table, $fields_values, $conditions)`
 
@@ -90,6 +98,8 @@ sqlClose();
 
 **Example:** `sqlUpdate('user', 'surname="White"', 'name="John"')`
 
+- - - -
+
 ### sqlDelete
 **Function:** `sqlDelete($table, $conditions)`
 
@@ -103,6 +113,8 @@ sqlClose();
 
 **Example:** `sqlDelete('user', 'surname="White"')`
 
+- - - -
+
 ### sqlCount
 **Function:** `sqlCount($table, $conditions)`
 
@@ -115,6 +127,8 @@ sqlClose();
 **Returns:** the number of rows that comply with the conditions.
 
 **Example:** `sqlCount('user', 'name="John"')`
+
+- - - -
 
 ### sqlEncode
 **Function:** `sqlEncode($data)`
