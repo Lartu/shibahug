@@ -3,6 +3,10 @@
 # ShibaHug
 PHP library that makes interfacing PHP with MySQL as easy as pie!
 
+## Why use ShibaHug?
+
+ShibaHug is designed to be super easy to use, super tiny and super straight to the point. You could use bigger and more complicated libraries, with certainly more features, or just use the build in methods and classes PHP offers, but if you want something simple and clean that's definitely plug-and-play with no fuss and no problems, you should give ShibaHug a try.
+
 ## How to install
 Just include de ShibaHug library in your project and you are done.
 ```php
