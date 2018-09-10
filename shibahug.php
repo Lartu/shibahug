@@ -158,19 +158,19 @@ function sqlLock($table, $type="WRITE"){
 	global $_shibahug__conn;
 
 	//sets uppercase and checks that the type is valid
-	$type = strtoupper($type)
-	if ($type !== "READ" || $type !== "WRITE") throw new Exception('Invalid lock type');
+	$type = strtoupper($type);
+	if ($type !== "READ" && $type !== "WRITE") throw new Exception('Invalid lock type. Received: '.$type);
 
 	$sql = "LOCK TABLES ";
 
 	//both checks if the $table variable is valid and constructs appropiate query
 	switch (gettype($table)) {
 		case 'string':
-			$sql .= $table
+			$sql .= $table;
 			break;
 
 		case 'array':
-			$sql .= implode(", ", $table)
+			$sql .= implode(", ", $table);
 			break;
 
 		default:
