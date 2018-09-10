@@ -1,13 +1,15 @@
 ![picture](https://img.shields.io/badge/version-2.1-green.svg)
 
 # ShibaHug
-PHP library that makes interfacing PHP with MySQL as easy as pie! 
+PHP library that makes interfacing PHP with MySQL as easy as pie!
 
 ## How to install
 Just include de ShibaHug library in your project and you are done.
 ```php
 include "shibahug.php";
 ```
+ShibaHug requires the `mysqli` module to be available. If you have a default *PHP 5* or above installation you should be alright. If you purposely disabled the module, you should enable it in order to use this library.
+
 ## How to Use
 After including the library in your project, you'll have to connect to a database. I normaly recommend storing your connection parameters in separate variables and then calling the connection with those variables as parameters whenever you want to perform an operation on your database, but that's up to you.
 
