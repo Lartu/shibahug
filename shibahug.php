@@ -12,11 +12,11 @@ Parameters:
 Returns: Nothing
 */
 function sqlConnect($serverurl, $username, $password, $dbname){
-	global $conn;
-	$conn = new mysqli($serverurl, $username, $password, $dbname);
-	$conn->query("SET CHARACTER SET utf8mb4");
-	if ($conn->connect_error) {
-		die("ShibaHug Error: Connection to the database failed (" . $conn->connect_error.")");
+	global $_shibahug__conn;
+	$_shibahug__conn = new mysqli($serverurl, $username, $password, $dbname);
+	$_shibahug__conn->query("SET CHARACTER SET utf8mb4");
+	if ($_shibahug__conn->connect_error) {
+		die("ShibaHug Error: Connection to the database failed (" . $_shibahug__conn->connect_error.")");
 	}
 }
 
@@ -25,8 +25,8 @@ sqlClose()
 Use: closes the connection with the database.
 */
 function sqlClose(){
-	global $conn;
-	$conn->close();
+	global $_shibahug__conn;
+	$_shibahug__conn->close();
 }
 
 /*
@@ -40,12 +40,12 @@ Example: sqlInsert('user', 'name, surname', '"John", "Smith"')
 Returns: Nothing
 */
 function sqlInsert($table, $fields, $values){
-	global $conn;
+	global $_shibahug__conn;
 	$sql = "INSERT INTO ".$table." (".$fields.") VALUES (".$values.")";
-	if ($conn->query($sql) === TRUE) {
-		return $last_id = $conn->insert_id;
+	if ($_shibahug__conn->query($sql) === TRUE) {
+		return $last_id = $_shibahug__conn->insert_id;
 	} else {
-		echo("ShibaHug Error: sqlInsert failed (" . $conn->connect_error.")");
+		echo("ShibaHug Error: sqlInsert failed (" . $_shibahug__conn->connect_error.")");
 		return -1;
 	}
 }
@@ -61,18 +61,18 @@ Returns: the aforementioned array of maps.
 Example: sqlSelect('user', 'surname', 'name="John"') will return the following array: [[surname: "Smith"]].
 .*/
 function sqlSelect($table, $fields, $conditions){
-	global $conn;
+	global $_shibahug__conn;
 	$sql = "SELECT * FROM ".$table." WHERE " . $conditions;
-	$result = $conn->query($sql);
-	$resultado = array();
+	$result = $_shibahug__conn->query($sql);
+	$result = array();
 	if($result->num_rows>0){
-		$i=0;
+		$i = 0;
 		while($row = $result->fetch_assoc()){
-			$resultado[$i] = $row;
-			$i++;
+			$result[$i] = $row;
+			++$i;
 		}
 	}
-	return ($resultado);
+	return ($result);
 }
 
 /*
@@ -86,10 +86,10 @@ Example: sqlUpdate('user', 'surname="White"', 'name="John"')
 Returns: Nothing
 */
 function sqlUpdate($table, $fields_values, $conditions){
-	global $conn;
+	global $_shibahug__conn;
 	$sql = "UPDATE $table SET $fields_values WHERE $conditions";
-	if ($conn->query($sql) !== TRUE) {
-		die("ShibaHug Error: sqlUpdate failed (" . $conn->connect_error.")");
+	if ($_shibahug__conn->query($sql) !== TRUE) {
+		die("ShibaHug Error: sqlUpdate failed (" . $_shibahug__conn->connect_error.")");
 	}
 }
 
@@ -103,10 +103,10 @@ Example: sqlDelete('user', 'surname="White"')
 Returns: Nothing
 */
 function sqlDelete($table, $conditions){
-	global $conn;
+	global $_shibahug__conn;
 	$sql = "DELETE FROM ".$table." WHERE " . $conditions;
-	if ($conn->query($sql) !== TRUE) {
-		die("ShibaHug Error: sqlDelete failed (" . $conn->connect_error.")");
+	if ($_shibahug__conn->query($sql) !== TRUE) {
+		die("ShibaHug Error: sqlDelete failed (" . $_shibahug__conn->connect_error.")");
 	}
 }
 
@@ -120,12 +120,12 @@ Returns: the number of rows that comply with the conditions.
 Example: sqlCount('user', 'name="John"')
 .*/
 function sqlCount($table, $conditions){
-	global $conn;
+	global $_shibahug__conn;
 	$sql = "SELECT COUNT(*) as cantidad FROM ".$table." WHERE " . $conditions;
-	$result = $conn->query($sql);
+	$result = $_shibahug__conn->query($sql);
 	$row = $result->fetch_assoc();
-	$valor=$row["cantidad"];
-	return ($valor);
+	$value = $row["cantidad"];
+	return ($value);
 }
 
 /*
@@ -137,11 +137,11 @@ Returns: the encoded data.
 .*/
 function sqlEncode($data){
 	$data = trim($data);
-	$data =stripslashes($data);
-	$data =htmlspecialchars($data);
+	$data = stripslashes($data);
+	$data = htmlspecialchars($data);
 	$data = addslashes($data);
-	$data =str_replace("\"", "&#34;", $data);
-	$data =str_replace("'", "&#39;", $data);
+	$data = str_replace("\"", "&#34;", $data);
+	$data = str_replace("'", "&#39;", $data);
 	return $data;
 }
 ?>
