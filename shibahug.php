@@ -144,4 +144,51 @@ function sqlEncode($data){
 	$data = str_replace("'", "&#39;", $data);
 	return $data;
 }
+
+/*
+sqlLock($table, $type)
+Use: Lock table or multiple tables.
+Parameters:
+    - $table: the table used to count values from or an array of tables to be locked.
+    - $type: a string (case insensitive) describing the lock type. Defaults to "WRITE".
+Returns: the number of rows that comply with the conditions.
+Example: sqlLock('user', 'rEaD')
+.*/
+function sqlLock($table, $type="WRITE"){
+	global $_shibahug__conn;
+
+	//sets uppercase and checks that the type is valid
+	$type = strtoupper($type);
+	if ($type !== "READ" && $type !== "WRITE") throw new Exception('Invalid lock type. Received: '.$type);
+
+	$sql = "LOCK TABLES ";
+
+	//both checks if the $table variable is valid and constructs appropiate query
+	switch (gettype($table)) {
+		case 'string':
+			$sql .= $table;
+			break;
+
+		case 'array':
+			$sql .= implode(", ", $table);
+			break;
+
+		default:
+			throw new Exception('Invalid $table var type');
+			break;
+	}
+
+	$sql .= " ".$type;
+	$_shibahug__conn->query($sql);
+}
+
+/*
+sqlUnLock()
+Use: Unlocks tables
+.*/
+function sqlUnLock(){
+	global $_shibahug__conn;
+	$sql = "UNLOCK TABLES";
+	$_shibahug__conn->query($sql);
+}
 ?>
