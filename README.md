@@ -172,7 +172,7 @@ sqlClose();
 
 **Parameters:**
  * `$table`: the table used to count values from or an array of tables to be locked.
- * `$type`: a string (case insensitive) describing the lock type. Defaults to "WRITE".
+ * `$type`: a string (case insensitive) describing the lock type. Can be either "READ" or "WRITE". Defaults to "WRITE".
  
 **Returns:** the number of rows that comply with the conditions.
 
