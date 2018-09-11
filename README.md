@@ -34,6 +34,19 @@ sqlClose();
 ```
 
 ## Available Operations
+
+ - [sqlConnect](#sqlconnect)
+ - [sqlClose](#sqlclose)
+ - [sqlInsert](#sqlinsert)
+ - [sqlSelect](#sqlselect)
+ - [sqlUpdate](#sqlupdate)
+ - [sqlDelete](#sqldelete)
+ - [sqlCount](#sqlcount)
+ - [sqlEncode](#sqlencode)
+ - [sqlLock](#sqllock)
+ - [sqlUnlock](#sqlunlock)
+ 
+
 ### sqlConnect
 **Function:** `sqlConnect($serverurl, $username, $password, $dbname)`
 
