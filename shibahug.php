@@ -118,7 +118,7 @@ Parameters:
     - $conditions: the aforementioned conditions.
 Returns: the number of rows that comply with the conditions.
 Example: sqlCount('user', 'name="John"')
-.*/
+*/
 function sqlCount($table, $conditions){
 	global $_shibahug__conn;
 	$sql = "SELECT COUNT(*) as cantidad FROM ".$table." WHERE " . $conditions;
@@ -134,7 +134,7 @@ Use: Encodes data so that it can be safely inserted into the database without ri
 Parameters:
     - $data: the data to be encoded.
 Returns: the encoded data.
-.*/
+*/
 function sqlEncode($data){
 	$data = trim($data);
 	$data = stripslashes($data);
@@ -153,7 +153,7 @@ Parameters:
     - $type: a string (case insensitive) describing the lock type. Defaults to "WRITE".
 Returns: the number of rows that comply with the conditions.
 Example: sqlLock('user', 'rEaD')
-.*/
+*/
 function sqlLock($table, $type="WRITE"){
 	global $_shibahug__conn;
 
@@ -185,7 +185,7 @@ function sqlLock($table, $type="WRITE"){
 /*
 sqlUnlock()
 Use: Unlocks tables
-.*/
+*/
 function sqlUnlock(){
 	global $_shibahug__conn;
 	$sql = "UNLOCK TABLES";
