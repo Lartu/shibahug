@@ -183,10 +183,10 @@ function sqlLock($table, $type="WRITE"){
 }
 
 /*
-sqlUnLock()
+sqlUnlock()
 Use: Unlocks tables
 .*/
-function sqlUnLock(){
+function sqlUnlock(){
 	global $_shibahug__conn;
 	$sql = "UNLOCK TABLES";
 	$_shibahug__conn->query($sql);
