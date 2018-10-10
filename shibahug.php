@@ -37,7 +37,7 @@ Parameters:
     - $fields: the fields where the values will be inserted.
     - $values: the values to be inserted.
 Example: sqlInsert('user', 'name, surname', '"John", "Smith"')
-Returns: Nothing
+Returns: The ID of the inserted record, or -1 if the insertion failed
 */
 function sqlInsert($table, $fields, $values){
 	global $_shibahug__conn;
