@@ -83,7 +83,7 @@ sqlClose();
  * `$table`: the table where the values will be inserted.
  * `$fields`: the fields where the values will be inserted.
  * `$values`: the values to be inserted.\
-**Returns:** Nothing
+**Returns:** The ID of the inserted record, or `-1` if the insertion failed
 
 **Example:** `sqlInsert('user', 'name, surname', '"John", "Smith"')`
 
