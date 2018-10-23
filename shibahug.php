@@ -63,11 +63,11 @@ Example: sqlSelect('user', 'surname', 'name="John"') will return the following a
 function sqlSelect($table, $fields, $conditions){
 	global $_shibahug__conn;
 	$sql = "SELECT * FROM ".$table." WHERE " . $conditions;
-	$result = $_shibahug__conn->query($sql);
+	$query_result = $_shibahug__conn->query($sql);
 	$result = array();
-	if($result->num_rows>0){
+	if($query_result->num_rows>0){
 		$i = 0;
-		while($row = $result->fetch_assoc()){
+		while($row = $query_result->fetch_assoc()){
 			$result[$i] = $row;
 			++$i;
 		}
