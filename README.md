@@ -82,7 +82,7 @@ sqlClose();
 **Parameters:**
  * `$table`: the table where the values will be inserted.
  * `$fields`: the fields where the values will be inserted.
- * `$values`: the values to be inserted.\
+ * `$values`: the values to be inserted.
 **Returns:** The ID of the inserted record, or `-1` if the insertion failed
 
 **Example:** `sqlInsert('user', 'name, surname', '"John", "Smith"')`
@@ -96,8 +96,8 @@ sqlClose();
 
 **Parameters:**
  * `$table`: the table used to select values from.
- * `$fields`: the fields used to select values from.
- * `$conditions`: the conditions the values to be brought must comply with.
+ * `$fields`: the fields used to select values from. Accepts strings and arrays of strings. Defaults to an empty string (all columns).
+ * `$conditions`: the conditions the values to be brought must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
  
 **Returns:** the aforementioned array of maps.
 
@@ -113,7 +113,7 @@ sqlClose();
 **Parameters:**
  * `$table`: the table where the values will be updated.
  * `$fields_values`: the fields and values to be updated.
- * `$conditions`: the conditions the values to be updated must comply with.
+ * `$conditions`: the conditions the values to be updated must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
  
 **Returns:** Nothing
 
@@ -128,7 +128,7 @@ sqlClose();
 
 **Parameters:**
  * `$table`: the table from where the values will be deleted.
- * `$conditions`: the conditions the values to be deleted must comply with.
+ * `$conditions`: the conditions the values to be deleted must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
  
 **Returns:** Nothing
 
@@ -143,7 +143,7 @@ sqlClose();
 
 **Parameters:**
  * `$table`: the table used to count values from.
- * `$conditions`: the aforementioned conditions.
+ * `$conditions`: the aforementioned conditions. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
  
 **Returns:** the number of rows that comply with the conditions.
 
