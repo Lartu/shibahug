@@ -55,15 +55,16 @@ sqlSelect($table, $fields, $conditions)
 Use: Returns an array of maps: the array is the number of rows that matched the conditions, [0] for the first one, [1] for the second, etc. Then the map is the fields requested from the row (as specified in $fields).
 Parameters:
     - $table: the table used to select values from.
-    - $fields: the fields used to select values from.
-    - $conditions: the conditions the values to be brought must comply with. Defaults to no conditions.
+    - $fields: the fields used to select values from. Accepts strings and arrays of strings. Defaults to an empty string (all columns).
+    - $conditions: the conditions the values to be brought must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Returns: the aforementioned array of maps.
 Example: sqlSelect('user', 'surname', 'name="John"') will return the following array: [[surname: "Smith"]].
 .*/
-function sqlSelect($table, $fields, $conditions = ""){
+function sqlSelect($table, $fields = "", $conditions = ""){
 	global $_shibahug__conn;
-	$where_clause = empty($conditions) ? "" : " WHERE $conditions";
-	$sql = "SELECT * FROM ".$table.$where_clause;
+	$select_clause  = _shibahug_formatSelect($fields);
+	$where_clause = _shibahug_formatWhere($conditions);
+	$sql = "SELECT ".$select_clause." FROM ".$table.$where_clause;
 	$query_result = $_shibahug__conn->query($sql);
 	$result = array();
 	if($query_result->num_rows>0){
@@ -82,13 +83,13 @@ Use: Used to perform an SQL update on the connected database.
 Parameters:
     - $table: the table where the values will be updated.
     - $fields_values: the fields and values to be updated.
-    - $conditions: the conditions the values to be updated must comply with. Defaults to no conditions.
+    - $conditions: the conditions the values to be updated must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Example: sqlUpdate('user', 'surname="White"', 'name="John"')
 Returns: Nothing
 */
 function sqlUpdate($table, $fields_values, $conditions = ""){
 	global $_shibahug__conn;
-	$where_clause = empty($conditions) ? "" : " WHERE $conditions";
+	$where_clause = _shibahug_formatWhere($conditions);
 	$sql = "UPDATE $table SET ".$fields_values.$where_clause;
 	if ($_shibahug__conn->query($sql) !== TRUE) {
 		die("ShibaHug Error: sqlUpdate failed (" . $_shibahug__conn->connect_error.")");
@@ -100,13 +101,13 @@ sqlDelete($table, $conditions)
 Use: Deletes all rows from $table that match the conditions in $conditions.
 Parameters:
     - $table: the table from where the values will be deleted.
-    - $conditions: the conditions the values to be deleted must comply with. Defaults to no conditions.
+    - $conditions: the conditions the values to be deleted must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Example: sqlDelete('user', 'surname="White"')
 Returns: Nothing
 */
 function sqlDelete($table, $conditions = ""){
 	global $_shibahug__conn;
-	$where_clause = empty($conditions) ? "" : " WHERE $conditions";
+	$where_clause = _shibahug_formatWhere($conditions);
 	$sql = "DELETE FROM ".$table.$where_clause;
 	if ($_shibahug__conn->query($sql) !== TRUE) {
 		die("ShibaHug Error: sqlDelete failed (" . $_shibahug__conn->connect_error.")");
@@ -118,13 +119,13 @@ sqlCount($table, $conditions)
 Use: Counts all the rows that comply with the passed conditions.
 Parameters:
     - $table: the table used to count values from.
-    - $conditions: the aforementioned conditions. Defaults to no conditions.
+    - $conditions: the aforementioned conditions. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Returns: the number of rows that comply with the conditions.
 Example: sqlCount('user', 'name="John"')
 */
 function sqlCount($table, $conditions = ""){
 	global $_shibahug__conn;
-	$where_clause = empty($conditions) ? "" : " WHERE $conditions";
+	$where_clause = _shibahug_formatWhere($conditions);
 	$sql = "SELECT COUNT(*) as cantidad FROM ".$table.$where_clause ;
 	$result = $_shibahug__conn->query($sql);
 	$row = $result->fetch_assoc();
@@ -195,4 +196,21 @@ function sqlUnlock(){
 	$sql = "UNLOCK TABLES";
 	$_shibahug__conn->query($sql);
 }
+
+// Utility functions
+
+function _shibahug_formatSelect($fields){
+  if(!is_array($fields) && !empty($fields)) {
+		$fields = array($fields);
+  }
+  return empty($fields) ? "*" : implode(",", $fields);
+}
+
+function _shibahug_formatWhere($conditions){
+  if(!is_array($conditions) && !empty($conditions)) {
+		$conditions = array($conditions);
+  }
+  return empty($conditions) ? "" : " WHERE " . implode(" AND ", $conditions);
+}
+
 ?>
