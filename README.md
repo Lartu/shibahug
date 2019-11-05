@@ -1,7 +1,9 @@
-![picture](https://img.shields.io/badge/version-2.1-green.svg)
-
-# 🐕 ShibaHug 🐕
-PHP library that makes interfacing PHP with MySQL as easy as pie!
+<p align=center>
+  <img src="https://raw.githubusercontent.com/Lartu/shibahug/master/shibahug.png" title="Shibahug">
+  <br>The PHP library that makes interfacing PHP with MySQL as easy as pie!
+  <br><img src="https://img.shields.io/badge/version-2.2-blue?style=for-the-badge">
+  <img src="https://img.shields.io/github/license/lartu/shibahug?style=for-the-badge">
+</p>
 
 ## Why use ShibaHug?
 
