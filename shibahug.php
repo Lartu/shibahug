@@ -5,19 +5,19 @@ mb_internal_encoding("UTF-8");
 sqlConnect($serverurl, $username, $password, $dbname)
 Use: Used to connect to a database. It must be called before performing any other ShibaHug database operation.
 Parameters:
-    - $serverurl: your database url. For example, 'localhost'.
-    - $username: the username used to connect to the database.
-    - $password: the password used to connect to the database.
-    - $dbname: the name of the database you wish to access.
+- $serverurl: your database url. For example, 'localhost'.
+- $username: the username used to connect to the database.
+- $password: the password used to connect to the database.
+- $dbname: the name of the database you wish to access.
 Returns: Nothing
 */
 function sqlConnect($serverurl, $username, $password, $dbname){
-	global $_shibahug__conn;
-	$_shibahug__conn = new mysqli($serverurl, $username, $password, $dbname);
-	$_shibahug__conn->query("SET CHARACTER SET utf8mb4");
-	if ($_shibahug__conn->connect_error) {
-		die("ShibaHug Error: Connection to the database failed (" . $_shibahug__conn->connect_error.")");
-	}
+global $_shibahug__conn;
+$_shibahug__conn = new mysqli($serverurl, $username, $password, $dbname);
+$_shibahug__conn->query("SET CHARACTER SET utf8mb4");
+if ($_shibahug__conn->connect_error) {
+die("ShibaHug Error: Connection to the database failed (" . $_shibahug__conn->connect_error.")");
+}
 }
 
 /*
@@ -25,166 +25,168 @@ sqlClose()
 Use: closes the connection with the database.
 */
 function sqlClose(){
-	global $_shibahug__conn;
-	$_shibahug__conn->close();
+global $_shibahug__conn;
+$_shibahug__conn->close();
 }
 
 /*
 sqlInsert($table, $fields, $values)
 Use: Used to perform an SQL insertion on the connected database.
 Parameters:
-    - $table: the table where the values will be inserted.
-    - $fields: the fields where the values will be inserted.
-    - $values: the values to be inserted.
+- $table: the table where the values will be inserted.
+- $fields: the fields where the values will be inserted.
+- $values: the values to be inserted.
 Example: sqlInsert('user', 'name, surname', '"John", "Smith"')
 Returns: The ID of the inserted record, or -1 if the insertion failed
 */
-function sqlInsert($table, $fields, $values){
-	global $_shibahug__conn;
-	$sql = "INSERT INTO ".$table." (".$fields.") VALUES (".$values.")";
-	if ($_shibahug__conn->query($sql) === TRUE) {
-		return $last_id = $_shibahug__conn->insert_id;
-	} else {
-		echo("ShibaHug Error: sqlInsert failed (" . $_shibahug__conn->connect_error.")");
-		return -1;
-	}
+function sqlInsert($table, $fields, $values, $printquery = false){
+global $_shibahug__conn;
+$sql = "INSERT INTO ".$table." (".$fields.") VALUES (".$values.")";
+if($printquery) echo $sql;
+if ($_shibahug__conn->query($sql) === TRUE) {
+return $last_id = $_shibahug__conn->insert_id;
+} else {
+echo("ShibaHug Error: sqlInsert failed (" . $_shibahug__conn->connect_error." | " . $_shibahug__conn->error.")");
+return -1;
+}
 }
 
 /*
 sqlSelect($table, $fields, $conditions)
 Use: Returns an array of maps: the array is the number of rows that matched the conditions, [0] for the first one, [1] for the second, etc. Then the map is the fields requested from the row (as specified in $fields).
 Parameters:
-    - $table: the table used to select values from.
-    - $fields: the fields used to select values from. Accepts strings and arrays of strings. Defaults to an empty string (all columns).
-    - $conditions: the conditions the values to be brought must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
+- $table: the table used to select values from.
+- $fields: the fields used to select values from. Accepts strings and arrays of strings. Defaults to an empty string (all columns).
+- $conditions: the conditions the values to be brought must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Returns: the aforementioned array of maps.
 Example: sqlSelect('user', 'surname', 'name="John"') will return the following array: [[surname: "Smith"]].
 .*/
-function sqlSelect($table, $fields = "", $conditions = ""){
-	global $_shibahug__conn;
-	$select_clause  = _shibahug_formatSelect($fields);
-	$where_clause = _shibahug_formatWhere($conditions);
-	$sql = "SELECT ".$select_clause." FROM ".$table.$where_clause;
-	$query_result = $_shibahug__conn->query($sql);
-	$result = array();
-	if($query_result->num_rows>0){
-		$i = 0;
-		while($row = $query_result->fetch_assoc()){
-			$result[$i] = $row;
-			++$i;
-		}
-	}
-	return ($result);
+function sqlSelect($table, $fields = "", $conditions = "", $printquery = false){
+global $_shibahug__conn;
+$select_clause  = _shibahug_formatSelect($fields);
+$where_clause = _shibahug_formatWhere($conditions);
+$sql = "SELECT ".$select_clause." FROM ".$table.$where_clause;
+if($printquery) echo $sql;
+$query_result = $_shibahug__conn->query($sql);
+$result = array();
+if($query_result->num_rows>0){
+$i = 0;
+while($row = $query_result->fetch_assoc()){
+$result[$i] = $row;
+++$i;
+}
+}
+return ($result);
 }
 
 /*
 sqlUpdate($table, $fields_values, $conditions)
 Use: Used to perform an SQL update on the connected database.
 Parameters:
-    - $table: the table where the values will be updated.
-    - $fields_values: the fields and values to be updated.
-    - $conditions: the conditions the values to be updated must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
+- $table: the table where the values will be updated.
+- $fields_values: the fields and values to be updated.
+- $conditions: the conditions the values to be updated must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Example: sqlUpdate('user', 'surname="White"', 'name="John"')
 Returns: Nothing
 */
 function sqlUpdate($table, $fields_values, $conditions = ""){
-	global $_shibahug__conn;
-	$where_clause = _shibahug_formatWhere($conditions);
-	$sql = "UPDATE $table SET ".$fields_values.$where_clause;
-	if ($_shibahug__conn->query($sql) !== TRUE) {
-		die("ShibaHug Error: sqlUpdate failed (" . $_shibahug__conn->connect_error.")");
-	}
+global $_shibahug__conn;
+$where_clause = _shibahug_formatWhere($conditions);
+$sql = "UPDATE $table SET ".$fields_values.$where_clause;
+if ($_shibahug__conn->query($sql) !== TRUE) {
+die("ShibaHug Error: sqlUpdate failed (" . $_shibahug__conn->connect_error." | " . $_shibahug__conn->error.")");
+}
 }
 
 /*
 sqlDelete($table, $conditions)
 Use: Deletes all rows from $table that match the conditions in $conditions.
 Parameters:
-    - $table: the table from where the values will be deleted.
-    - $conditions: the conditions the values to be deleted must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
+- $table: the table from where the values will be deleted.
+- $conditions: the conditions the values to be deleted must comply with. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Example: sqlDelete('user', 'surname="White"')
 Returns: Nothing
 */
 function sqlDelete($table, $conditions = ""){
-	global $_shibahug__conn;
-	$where_clause = _shibahug_formatWhere($conditions);
-	$sql = "DELETE FROM ".$table.$where_clause;
-	if ($_shibahug__conn->query($sql) !== TRUE) {
-		die("ShibaHug Error: sqlDelete failed (" . $_shibahug__conn->connect_error.")");
-	}
+global $_shibahug__conn;
+$where_clause = _shibahug_formatWhere($conditions);
+$sql = "DELETE FROM ".$table.$where_clause;
+if ($_shibahug__conn->query($sql) !== TRUE) {
+die("ShibaHug Error: sqlDelete failed (" . $_shibahug__conn->connect_error." | " . $_shibahug__conn->error.")");
+}
 }
 
 /*
 sqlCount($table, $conditions)
 Use: Counts all the rows that comply with the passed conditions.
 Parameters:
-    - $table: the table used to count values from.
-    - $conditions: the aforementioned conditions. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
+- $table: the table used to count values from.
+- $conditions: the aforementioned conditions. Accepts strings and arrays of strings. Defaults to an empty string (no conditions).
 Returns: the number of rows that comply with the conditions.
 Example: sqlCount('user', 'name="John"')
 */
 function sqlCount($table, $conditions = ""){
-	global $_shibahug__conn;
-	$where_clause = _shibahug_formatWhere($conditions);
-	$sql = "SELECT COUNT(*) as cantidad FROM ".$table.$where_clause ;
-	$result = $_shibahug__conn->query($sql);
-	$row = $result->fetch_assoc();
-	$value = $row["cantidad"];
-	return ($value);
+global $_shibahug__conn;
+$where_clause = _shibahug_formatWhere($conditions);
+$sql = "SELECT COUNT(*) as cantidad FROM ".$table.$where_clause ;
+$result = $_shibahug__conn->query($sql);
+$row = $result->fetch_assoc();
+$value = $row["cantidad"];
+return ($value);
 }
 
 /*
 sqlEncode($data)
 Use: Encodes data so that it can be safely inserted into the database without risk of it being used to perform an SQL Inyection.
 Parameters:
-    - $data: the data to be encoded.
+- $data: the data to be encoded.
 Returns: the encoded data.
 */
 function sqlEncode($data){
-	$data = trim($data);
-	$data = stripslashes($data);
-	$data = htmlspecialchars($data);
-	$data = addslashes($data);
-	$data = str_replace("\"", "&#34;", $data);
-	$data = str_replace("'", "&#39;", $data);
-	return $data;
+$data = trim($data);
+$data = stripslashes($data);
+$data = htmlspecialchars($data);
+$data = addslashes($data);
+$data = str_replace("\"", "&#34;", $data);
+$data = str_replace("'", "&#39;", $data);
+return $data;
 }
 
 /*
 sqlLock($table, $type)
 Use: Lock table or multiple tables.
 Parameters:
-    - $table: the table used to count values from or an array of tables to be locked.
-    - $type: a string (case insensitive) describing the lock type. Defaults to "WRITE".
+- $table: the table used to count values from or an array of tables to be locked.
+- $type: a string (case insensitive) describing the lock type. Defaults to "WRITE".
 Returns: the number of rows that comply with the conditions.
 Example: sqlLock('user', 'rEaD')
 */
 function sqlLock($table, $type="WRITE"){
-	global $_shibahug__conn;
+global $_shibahug__conn;
 
-	//sets uppercase and checks that the type is valid
-	$type = strtoupper($type);
-	if ($type !== "READ" && $type !== "WRITE") throw new Exception('Invalid lock type. Received: '.$type);
+//sets uppercase and checks that the type is valid
+$type = strtoupper($type);
+if ($type !== "READ" && $type !== "WRITE") throw new Exception('Invalid lock type. Received: '.$type);
 
-	$sql = "LOCK TABLES ";
+$sql = "LOCK TABLES ";
 
-	//both checks if the $table variable is valid and constructs appropiate query
-	switch (gettype($table)) {
-		case 'string':
-			$sql .= $table;
-			break;
+//both checks if the $table variable is valid and constructs appropiate query
+switch (gettype($table)) {
+case 'string':
+$sql .= $table;
+break;
 
-		case 'array':
-			$sql .= implode(", ", $table);
-			break;
+case 'array':
+$sql .= implode(", ", $table);
+break;
 
-		default:
-			throw new Exception('Invalid $table var type');
-			break;
-	}
+default:
+throw new Exception('Invalid $table var type');
+break;
+}
 
-	$sql .= " ".$type;
-	$_shibahug__conn->query($sql);
+$sql .= " ".$type;
+$_shibahug__conn->query($sql);
 }
 
 /*
@@ -192,25 +194,39 @@ sqlUnlock()
 Use: Unlocks tables
 */
 function sqlUnlock(){
-	global $_shibahug__conn;
-	$sql = "UNLOCK TABLES";
-	$_shibahug__conn->query($sql);
+global $_shibahug__conn;
+$sql = "UNLOCK TABLES";
+$_shibahug__conn->query($sql);
 }
 
 // Utility functions
 
 function _shibahug_formatSelect($fields){
-  if(!is_array($fields) && !empty($fields)) {
-		$fields = array($fields);
-  }
-  return empty($fields) ? "*" : implode(",", $fields);
+if(!is_array($fields) && !empty($fields)) {
+$fields = array($fields);
+}
+return empty($fields) ? "*" : implode(",", $fields);
 }
 
 function _shibahug_formatWhere($conditions){
-  if(!is_array($conditions) && !empty($conditions)) {
-		$conditions = array($conditions);
-  }
-  return empty($conditions) ? "" : " WHERE " . implode(" AND ", $conditions);
+if(!is_array($conditions) && !empty($conditions)) {
+$conditions = array($conditions);
+}
+return empty($conditions) ? "" : " WHERE " . implode(" AND ", $conditions);
+}
+
+function sqlQuery($sql){
+global $_shibahug__conn;
+$query_result = $_shibahug__conn->query($sql);
+$result = array();
+if($query_result->num_rows>0){
+$i = 0;
+while($row = $query_result->fetch_assoc()){
+$result[$i] = $row;
+++$i;
+}
+}
+return ($result);
 }
 
 ?>
